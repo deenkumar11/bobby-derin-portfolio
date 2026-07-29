@@ -11,7 +11,13 @@ const FILTERS = [
 function WorkCard({ item }) {
   const src = item.image_path ? item.fallback_url : item.fallback_url
   return (
-    <div className="group relative overflow-hidden bg-ink-soft">
+    <a
+      href={src}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Open full-size image: ${item.title}`}
+      className="group relative block cursor-zoom-in overflow-hidden bg-ink-soft"
+    >
       <div className="aspect-[4/5] w-full overflow-hidden">
         <img
           src={src}
@@ -27,7 +33,7 @@ function WorkCard({ item }) {
         </p>
         <p className="mt-1 font-mono text-[11px] text-bone-dim">{item.camera}</p>
       </div>
-    </div>
+    </a>
   )
 }
 
