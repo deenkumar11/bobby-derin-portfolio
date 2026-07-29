@@ -11,7 +11,7 @@ export default function Hero() {
         </div>
 
         <h1 className="mt-8 font-display text-[16vw] font-800 leading-[0.85] tracking-tight text-bone md:text-[9.5rem]">
-          bobby
+          Bobby
           <br />
           derin
         </h1>

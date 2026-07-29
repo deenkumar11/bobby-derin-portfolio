@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useWork } from '../lib/useWork'
+import { Link } from 'react-router-dom'
+import { useWorkEvents } from '../lib/useWork'
 
 const FILTERS = [
   { label: 'All work', value: 'all' },
@@ -8,38 +9,45 @@ const FILTERS = [
   { label: 'Design', value: 'design' },
 ]
 
-function WorkCard({ item }) {
-  const src = item.image_path ? item.fallback_url : item.fallback_url
+function EventCard({ event }) {
+  const cover = event.cover
   return (
-    <a
-      href={src}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`Open full-size image: ${item.title}`}
-      className="group relative block cursor-zoom-in overflow-hidden bg-ink-soft"
+    <Link
+      to={`/event/${event.slug}`}
+      aria-label={`View all photos from ${event.title}`}
+      className="group relative block overflow-hidden bg-ink-soft"
     >
       <div className="aspect-[4/5] w-full overflow-hidden">
         <img
-          src={src}
-          alt={item.title}
+          src={cover?.image_url}
+          alt={event.title}
           loading="lazy"
           className="h-full w-full object-cover grayscale-[15%] transition duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
         />
       </div>
+
+      {event.photoCount > 1 && (
+        <span className="absolute right-3 top-3 rounded-full bg-ink/80 px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-bone backdrop-blur-sm">
+          {event.photoCount} photos
+        </span>
+      )}
+
       <div className="absolute inset-x-0 bottom-0 translate-y-full bg-ink/90 p-4 backdrop-blur-sm transition-transform duration-300 ease-out group-hover:translate-y-0">
-        <p className="font-body text-sm font-600 text-bone">{item.title}</p>
+        <p className="font-body text-sm font-600 text-bone">{event.title}</p>
         <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-safelight">
-          {item.category} · {item.year}
+          {event.category} · {event.year}
         </p>
-        <p className="mt-1 font-mono text-[11px] text-bone-dim">{item.camera}</p>
+        {cover?.camera && (
+          <p className="mt-1 font-mono text-[11px] text-bone-dim">{cover.camera}</p>
+        )}
       </div>
-    </a>
+    </Link>
   )
 }
 
 export default function WorkGrid() {
   const [medium, setMedium] = useState('all')
-  const { items, loading } = useWork(medium)
+  const { events, loading } = useWorkEvents(medium)
 
   return (
     <section id="work" className="mx-auto max-w-7xl px-6 py-24 md:px-10">
@@ -63,11 +71,11 @@ export default function WorkGrid() {
       </div>
 
       <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {loading && items.length === 0
+        {loading && events.length === 0
           ? Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="aspect-[4/5] animate-pulse bg-ink-soft" />
             ))
-          : items.map((item) => <WorkCard key={item.id} item={item} />)}
+          : events.map((event) => <EventCard key={event.slug} event={event} />)}
       </div>
     </section>
   )
