@@ -206,20 +206,23 @@ export function useEventPhotos(slug) {
       // and Supabase has nothing, e.g. before it's wired up)
       const fallbackMatch = groupIntoEvents(FALLBACK_WORK).find((e) => e.slug === slug)
 
-      // Only compare against `id` when the slug actually looks like a UUID —
-      // otherwise Postgres throws a 400 trying to cast a non-UUID string to
-      // the id column's type.
+      // Use .eq()/.or() builder methods (which safely escape values) rather
+      // than hand-building a raw filter string — a slug containing spaces
+      // or other special characters would otherwise break Supabase's filter
+      // syntax and return a 400.
       const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-      const filter = uuidPattern.test(slug)
-        ? `event_slug.eq.${slug},id.eq.${slug}`
-        : `event_slug.eq.${slug}`
 
-      const { data, error } = await supabase
+      let queryBuilder = supabase
         .from('work_items')
         .select('*')
         .eq('published', true)
-        .or(filter)
         .order('sort_order', { ascending: true })
+
+      queryBuilder = uuidPattern.test(slug)
+        ? queryBuilder.or(`event_slug.eq.${slug},id.eq.${slug}`)
+        : queryBuilder.eq('event_slug', slug)
+
+      const { data, error } = await queryBuilder
 
       if (cancelled) return
 
