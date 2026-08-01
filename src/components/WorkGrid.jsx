@@ -1,53 +1,46 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useWorkEvents } from '../lib/useWork'
+import { useWork } from '../lib/useWork'
 
 const FILTERS = [
   { label: 'All work', value: 'all' },
   { label: 'Photography', value: 'photography' },
   { label: 'Videography', value: 'videography' },
   { label: 'Design', value: 'design' },
+  { label: 'Product Photography', value: 'product-photography' },
 ]
 
-function EventCard({ event }) {
-  const cover = event.cover
+function WorkTile({ item }) {
   return (
-    <Link
-      to={`/event/${event.slug}`}
-      aria-label={`View all photos from ${event.title}`}
-      className="group relative block overflow-hidden bg-ink-soft"
+    <a
+      href={item.image_url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Open full-size image: ${item.title}`}
+      className="group relative mb-4 block break-inside-avoid cursor-zoom-in overflow-hidden bg-ink-soft"
     >
-      <div className="aspect-[4/5] w-full overflow-hidden">
-        <img
-          src={cover?.image_url}
-          alt={event.title}
-          loading="lazy"
-          className="h-full w-full object-cover grayscale-[15%] transition duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
-        />
-      </div>
-
-      {event.photoCount > 1 && (
-        <span className="absolute right-3 top-3 rounded-full bg-ink/80 px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-bone backdrop-blur-sm">
-          {event.photoCount} photos
-        </span>
-      )}
-
+      {/* No fixed aspect ratio / object-cover here on purpose — each photo
+          keeps its own natural orientation (portrait, landscape, square)
+          instead of being force-cropped into a uniform box. */}
+      <img
+        src={item.image_url}
+        alt={item.title}
+        loading="lazy"
+        className="block h-auto w-full grayscale-[15%] transition duration-700 ease-out group-hover:scale-[1.02] group-hover:grayscale-0"
+      />
       <div className="absolute inset-x-0 bottom-0 translate-y-full bg-ink/90 p-4 backdrop-blur-sm transition-transform duration-300 ease-out group-hover:translate-y-0">
-        <p className="font-body text-sm font-600 text-bone">{event.title}</p>
+        <p className="font-body text-sm font-600 text-bone">{item.title}</p>
         <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-safelight">
-          {event.category} · {event.year}
+          {item.category} · {item.year}
         </p>
-        {cover?.camera && (
-          <p className="mt-1 font-mono text-[11px] text-bone-dim">{cover.camera}</p>
-        )}
+        {item.camera && <p className="mt-1 font-mono text-[11px] text-bone-dim">{item.camera}</p>}
       </div>
-    </Link>
+    </a>
   )
 }
 
 export default function WorkGrid() {
   const [medium, setMedium] = useState('all')
-  const { events, loading } = useWorkEvents(medium)
+  const { items, loading } = useWork(medium)
 
   return (
     <section id="work" className="mx-auto max-w-7xl px-6 py-24 md:px-10">
@@ -70,12 +63,15 @@ export default function WorkGrid() {
         </div>
       </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {loading && events.length === 0
+      {/* CSS columns give a masonry layout — each tile keeps its own height
+          based on its image's real aspect ratio, instead of a uniform grid
+          that force-crops every photo the same shape. */}
+      <div className="mt-10 columns-1 gap-4 sm:columns-2 lg:columns-3">
+        {loading && items.length === 0
           ? Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="aspect-[4/5] animate-pulse bg-ink-soft" />
+              <div key={i} className="mb-4 aspect-[4/5] w-full break-inside-avoid animate-pulse bg-ink-soft" />
             ))
-          : events.map((event) => <EventCard key={event.slug} event={event} />)}
+          : items.map((item) => <WorkTile key={item.id} item={item} />)}
       </div>
     </section>
   )
