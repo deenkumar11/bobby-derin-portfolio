@@ -1,16 +1,24 @@
 const SERVICES = [
   {
     title: 'Photography',
-    detail: 'Editorial, portrait, event &amp; commercial photography — shot and delivered in a consistent, considered style.',
+    detail: 'Editorial, portrait, event, sports & product photography — shot and delivered in a consistent, considered style, with photo editing done in Lightroom and Photoshop.',
   },
   {
     title: 'Videography',
-    detail: 'Short films, music videos, brand films and event coverage, from concept and shoot through to grade.',
+    detail: 'Music videos, brand films and event coverage, from concept and shoot through to grade.',
+  },
+    {
+    title: 'Video Editing',
+    detail: 'Culling, color grading and assembly in Premiere Pro & Lightroom — turning raw footage into polished, deadline-ready final cuts.',
   },
   {
     title: 'Graphic Design',
     detail: 'Brand identity, print collateral and social design, built to hold up alongside the photography and film.',
   },
+    {
+    title: 'Producy Photography',
+    detail: 'Clean, commercial-grade product shots for brands and campaigns — styled, lit and post-processed for print and digital use.',
+  }
 ]
 
 export default function Services() {

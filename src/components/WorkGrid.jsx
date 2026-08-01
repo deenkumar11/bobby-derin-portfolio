@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useWork } from '../lib/useWork'
 
 const FILTERS = [
-  { label: 'All work', value: 'all' },
   { label: 'Photography', value: 'photography' },
   { label: 'Videography', value: 'videography' },
   { label: 'Design', value: 'design' },

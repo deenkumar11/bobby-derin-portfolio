@@ -10,16 +10,13 @@ export default function About() {
         </div>
         <div className="md:col-span-7 md:col-start-6">
           <p className="text-lg leading-relaxed text-bone/90 md:text-xl">
-            Bobby Derin is a Chennai-based visual artist working across photography, film and
-            graphic design. What started with a camera on the streets of Chennai has grown into
-            a practice that moves fluidly between a still frame, a moving one, and the printed
-            page — always in service of a story worth telling clearly.
+            I'm a Chennai-based Multimedia creator with over 7 years of experience working across photography, videography, photo editing, video editing, and graphic design. My work moves seamlessly between stills, motion, and design, creating compelling visual stories with creativity, precision, and purpose.
           </p>
           <div className="mt-10 grid grid-cols-2 gap-8 border-t border-bone/10 pt-8 sm:grid-cols-4">
             {[
-              ['6+', 'Years shooting'],
+              ['7+', 'Years shooting'],
               ['120+', 'Projects delivered'],
-              ['3', 'Disciplines'],
+              ['4', 'Disciplines'],
               ['IN', 'Based in Chennai'],
             ].map(([stat, label]) => (
               <div key={label}>

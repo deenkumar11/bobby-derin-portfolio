@@ -44,7 +44,7 @@ export default function Contact() {
               Tell me a bit about the project and I'll get back to you within a couple of days.
             </p>
             <div className="mt-8 space-y-1 font-mono text-sm text-bone-dim">
-              <p>hello@bobbyderin.com</p>
+              <p>derinbobby05@gmail.com</p>
               <p>Chennai, Tamil Nadu, India</p>
             </div>
           </div>
