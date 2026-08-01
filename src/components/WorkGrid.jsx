@@ -9,7 +9,35 @@ const FILTERS = [
   { label: 'Product Photography', value: 'product-photography' },
 ]
 
-function WorkTile({ item }) {
+const VIDEO_EXT_PATTERN = /\.(mp4|mov|webm|m4v)$/i
+
+function Caption({ item }) {
+  return (
+    <div className="absolute inset-x-0 bottom-0 translate-y-full bg-ink/90 p-4 backdrop-blur-sm transition-transform duration-300 ease-out group-hover:translate-y-0">
+      <p className="font-body text-sm font-600 text-bone">{item.title}</p>
+      <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-safelight">
+        {item.category} · {item.year}
+      </p>
+      {item.camera && <p className="mt-1 font-mono text-[11px] text-bone-dim">{item.camera}</p>}
+    </div>
+  )
+}
+
+function VideoTile({ item }) {
+  return (
+    <div className="group relative mb-4 block break-inside-avoid overflow-hidden bg-ink-soft">
+      <video
+        src={item.image_url}
+        controls
+        preload="metadata"
+        className="block h-auto w-full"
+      />
+      <Caption item={item} />
+    </div>
+  )
+}
+
+function PhotoTile({ item }) {
   return (
     <a
       href={item.image_url}
@@ -27,15 +55,14 @@ function WorkTile({ item }) {
         loading="lazy"
         className="block h-auto w-full grayscale-[15%] transition duration-700 ease-out group-hover:scale-[1.02] group-hover:grayscale-0"
       />
-      <div className="absolute inset-x-0 bottom-0 translate-y-full bg-ink/90 p-4 backdrop-blur-sm transition-transform duration-300 ease-out group-hover:translate-y-0">
-        <p className="font-body text-sm font-600 text-bone">{item.title}</p>
-        <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-safelight">
-          {item.category} · {item.year}
-        </p>
-        {item.camera && <p className="mt-1 font-mono text-[11px] text-bone-dim">{item.camera}</p>}
-      </div>
+      <Caption item={item} />
     </a>
   )
+}
+
+function WorkTile({ item }) {
+  const isVideo = VIDEO_EXT_PATTERN.test(item.image_url ?? '')
+  return isVideo ? <VideoTile item={item} /> : <PhotoTile item={item} />
 }
 
 export default function WorkGrid() {
@@ -64,8 +91,8 @@ export default function WorkGrid() {
       </div>
 
       {/* CSS columns give a masonry layout — each tile keeps its own height
-          based on its image's real aspect ratio, instead of a uniform grid
-          that force-crops every photo the same shape. */}
+          based on its image's/video's real aspect ratio, instead of a
+          uniform grid that force-crops everything the same shape. */}
       <div className="mt-10 columns-1 gap-4 sm:columns-2 lg:columns-3">
         {loading && items.length === 0
           ? Array.from({ length: 6 }).map((_, i) => (
